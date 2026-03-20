@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git & GitHub 互动教程</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-shape shape1"></div>
+  <div class="bg-shape shape2"></div>
+
+  <header class="site-header">
+    <img src="logo.png" alt="SpaceMiao Logo" class="brand-logo">
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="container">
+      <h1 class="serif-title">Git 原理互动教程</h1>
+      <p class="hero-sub">Interactive Git & GitHub Guide</p>
+    </div>
+  </section>
+
+  <section id="nav-section" class="nav-section">
+    <div class="container">
+      <div class="nav-grid">
+        <button class="nav-card active" data-section="what-is-git" onclick="showSection('what-is-git')">
+          <span class="nav-label">Git 是什么</span>
+        </button>
+        <button class="nav-card" data-section="commits" onclick="showSection('commits')">
+          <span class="nav-label">提交 (Commit)</span>
+        </button>
+        <button class="nav-card" data-section="branches" onclick="showSection('branches')">
+          <span class="nav-label">分支 (Branch)</span>
+        </button>
+        <button class="nav-card" data-section="merge" onclick="showSection('merge')">
+          <span class="nav-label">合并 (Merge)</span>
+        </button>
+        <button class="nav-card" data-section="pull-request" onclick="showSection('pull-request')">
+          <span class="nav-label">请求 (PR)</span>
+        </button>
+        <button class="nav-card" data-section="workflow" onclick="showSection('workflow')">
+          <span class="nav-label">完整流程</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div id="what-is-git" class="content-section glass-panel active">
+        <h2 class="serif-title">Git 是什么？</h2>
+        <div class="analogy-card">
+          <div>
+            <h3>存档系统与版本管理</h3>
+            <p>Git 就像游戏里的<strong>存档系统</strong>或写论文时的<strong>版本备份</strong>（如 <code>v1.doc</code>、<code>vfinal.doc</code>）。它帮你优雅地追踪文件的每一次变化，让你随时可以回到过去的状态。</p>
+          </div>
+        </div>
+        <div class="interactive-demo" id="git-vs-github-demo">
+          <div class="toggle-container">
+            <button class="toggle-btn active" onclick="toggleGitGithub('git')">Git</button>
+            <button class="toggle-btn" onclick="toggleGitGithub('github')">GitHub</button>
+          </div>
+          <div class="demo-display" id="git-display">
+            <p class="serif-title" style="font-size:1.5rem">本地运行，追踪文件的每一次变化</p>
+            <p style="color:var(--text2);margin-top:8px">版本追踪 · 本地存档 · 分支管理</p>
+          </div>
+          <div class="demo-display hidden" id="github-display">
+            <p class="serif-title" style="font-size:1.5rem">云端存储代码，提供团队协作平台</p>
+            <p style="color:var(--text2);margin-top:8px">代码托管 · 在线协作 · Pull Request</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="commits" class="content-section glass-panel">
+        <h2 class="serif-title">Commit — 存档点</h2>
+        <div class="analogy-card">
+          <div>
+            <h3>快照 (Snapshot)</h3>
+            <p>每次做一次 Commit，就像给当时的代码<strong>拍一张照片</strong>。通过这些快照，你可以组成完整的代码演进历史。</p>
+          </div>
+        </div>
+        <div class="interactive-demo">
+          <div class="commit-playground">
+            <div class="code-editor">
+              <div class="editor-header">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="editor-title">index.html</span>
+              </div>
+              <div class="editor-body" id="editor-body">
+                <div class="code-line"><span class="line-num">1</span><span class="code-text">&lt;h1&gt;Hello World&lt;/h1&gt;</span></div>
+              </div>
+            </div>
+            <div class="commit-actions">
+              <button class="btn-action" onclick="addCodeLine()">写一行代码</button>
+              <button class="btn-action dark" onclick="makeCommit()">Commit 存档</button>
+            </div>
+            <div class="commit-timeline" id="commit-timeline">
+              <div class="timeline-label">提交历史：</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="branches" class="content-section glass-panel">
+        <h2 class="serif-title">Branch — 平行宇宙</h2>
+        <div class="analogy-card">
+          <div>
+            <h3>隔离实验环境</h3>
+            <p><strong>main 分支</strong>是稳定运行的正式版。创建分支就像分出一个平行宇宙，在里面开发新功能不会影响到主时间线。</p>
+          </div>
+        </div>
+        <div class="interactive-demo">
+          <div class="branch-playground">
+            <canvas id="branchCanvas" width="700" height="320"></canvas>
+            <div class="branch-controls">
+              <button class="btn-action dark" onclick="createBranch()">创建新分支</button>
+              <button class="btn-action" onclick="addBranchCommit('main')">在 main 提交</button>
+              <button class="btn-action" id="feature-commit-btn" onclick="addBranchCommit('feature')" disabled>在新分支提交</button>
+              <button class="btn-action" onclick="resetBranches()">重置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="merge" class="content-section glass-panel">
+        <h2 class="serif-title">Merge — 合并</h2>
+        <div class="analogy-card">
+          <div>
+            <h3>时间线收束</h3>
+            <p>当新分支的功能开发完毕，通过 <strong>Merge (合并)</strong> 可以将平行宇宙中的改动带回到 main 主干中。</p>
+          </div>
+        </div>
+        <div class="interactive-demo">
+          <div class="merge-playground">
+            <canvas id="mergeCanvas" width="700" height="320"></canvas>
+            <div class="merge-controls">
+              <button class="btn-action dark" id="merge-step-btn" onclick="mergeStep()">下一步</button>
+              <button class="btn-action" onclick="resetMerge()">重置</button>
+            </div>
+            <div class="merge-narration" id="merge-narration">点击"下一步"开始演示</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="pull-request" class="content-section glass-panel">
+        <h2 class="serif-title">Pull Request</h2>
+        <div class="analogy-card">
+          <div>
+            <h3>代码审查请求</h3>
+            <p>在 GitHub 上，合并代码前通常会发起 <strong>Pull Request (简称 PR)</strong>，请求团队成员来审查代码 (Code Review)，以保证质量。</p>
+          </div>
+        </div>
+        <div class="interactive-demo">
+          <div class="pr-playground">
+            <div class="pr-simulator">
+              <div class="pr-step active" id="pr-step-1">
+                <div class="pr-step-content">
+                  <h4 class="serif-title">1.发起请求</h4>
+                  <div class="pr-card">
+                    <div class="pr-header">
+                      <span class="pr-title">Add minimal glass design</span>
+                    </div>
+                    <div class="pr-meta">feature-ui → main</div>
+                    <button class="btn-action dark" onclick="prNext(2)">提交 PR</button>
+                  </div>
+                </div>
+              </div>
+              <div class="pr-step" id="pr-step-2">
+                <div class="pr-step-content">
+                  <h4 class="serif-title">2.代码审查</h4>
+                  <div class="review-comments">
+                    <div class="review-comment">
+                      <div class="reviewer">Alice:</div>
+                      <div class="comment-text">极简风格看起来棒极了！LGTM。</div>
+                    </div>
+                  </div>
+                  <button class="btn-action dark" onclick="prNext(3)">批准并合并</button>
+                </div>
+              </div>
+              <div class="pr-step" id="pr-step-3">
+                <div class="pr-step-content">
+                  <h4 class="serif-title">3.合并成功</h4>
+                  <div class="merge-success">
+                    <p class="serif-title" style="font-size:2rem">Merged</p>
+                    <p class="merge-detail" style="margin-top:8px">代码已加入主干分支</p>
+                  </div>
+                  <button class="btn-action" onclick="prReset()" style="margin-top:24px">重来</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="workflow" class="content-section glass-panel">
+        <h2 class="serif-title">完整工作流程</h2>
+        <div class="workflow-steps">
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>1. Clone (克隆)</h4>
+              <p>将远程代码库下载到本地</p>
+              <code>git clone &lt;url&gt;</code>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>2. Branch (分支)</h4>
+              <p>创建隔离的开发环境</p>
+              <code>git checkout -b feature</code>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>3. Commit (提交)</h4>
+              <p>保存代码快照</p>
+              <code>git commit -m "update"</code>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>4. Push (推送)</h4>
+              <p>上传本地分支到云端</p>
+              <code>git push origin feature</code>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>5. Pull Request</h4>
+              <p>在 GitHub 发起合并请求，进行审查</p>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-info">
+              <h4>6. Merge (合并)</h4>
+              <p>审查通过后并入主干</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
